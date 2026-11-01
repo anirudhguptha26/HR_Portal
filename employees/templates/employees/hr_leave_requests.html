@@ -1,0 +1,94 @@
+{% extends 'employees/base.html' %}
+{% block title %}Manage Leave Requests - HR Portal{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+        <i class="bi bi-clipboard-check"></i> Leave Requests
+        {% if pending_count %}
+        <span class="badge bg-warning text-dark ms-2">{{ pending_count }} Pending</span>
+        {% endif %}
+    </h4>
+    <div>
+        <select id="statusFilter" class="form-select form-select-sm" style="width:auto;display:inline-block;"
+                onchange="location.href='?status='+this.value">
+            <option value="">All Statuses</option>
+            {% for val, label in status_choices %}
+            <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+{% if leaves %}
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Employee</th>
+                    <th>Type</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leave in leaves %}
+                <tr>
+                    <td>
+                        <strong>{{ leave.employee.user.get_full_name|default:leave.employee.user.username }}</strong>
+                        <br><small class="text-muted">{{ leave.employee.employee_id }}</small>
+                    </td>
+                    <td>{{ leave.get_leave_type_display }}</td>
+                    <td>{{ leave.start_date }}</td>
+                    <td>{{ leave.end_date }}</td>
+                    <td style="max-width:180px;">{{ leave.reason }}</td>
+                    <td>
+                        {% if leave.status == 'PENDING' %}
+                            <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> Pending</span>
+                        {% elif leave.status == 'APPROVED' %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Denied</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if leave.status == 'PENDING' %}
+                        <form method="post" action="{% url 'hr_leave_action' leave.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <div class="input-group input-group-sm mb-1" style="max-width:260px;">
+                                <input type="text" name="hr_remarks" class="form-control" placeholder="Remarks (optional)">
+                            </div>
+                            <div class="btn-group btn-group-sm">
+                                <button type="submit" name="action" value="APPROVED" class="btn btn-success">
+                                    <i class="bi bi-check-lg"></i> Approve
+                                </button>
+                                <button type="submit" name="action" value="DENIED" class="btn btn-danger">
+                                    <i class="bi bi-x-lg"></i> Deny
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <span class="text-muted small">
+                            {% if leave.reviewed_by %}
+                                By {{ leave.reviewed_by.user.get_full_name|default:leave.reviewed_by.user.username }}
+                            {% endif %}
+                            {% if leave.hr_remarks %}<br>« {{ leave.hr_remarks }} »{% endif %}
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-clipboard-x" style="font-size:3rem;"></i>
+    <p class="mt-2">No leave requests found.</p>
+</div>
+{% endif %}
+{% endblock %}

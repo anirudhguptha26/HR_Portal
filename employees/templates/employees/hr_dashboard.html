@@ -1,0 +1,146 @@
+{% extends 'employees/base.html' %}
+{% block title %}HR Dashboard - HR Portal{% endblock %}
+{% block content %}
+<style>
+  .dash-card {
+    border: none;
+    border-radius: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .dash-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    color: inherit;
+  }
+  .dash-card .card-body {
+    padding: 1.75rem;
+  }
+  .dash-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  .dash-count {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .dash-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.7;
+  }
+  /* Card accent colours */
+  .card-total   { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+  .card-active  { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: #fff; }
+  .card-inactive{ background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: #fff; }
+  .card-leave   { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); color: #fff; }
+  .card-pending { background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%); color: #fff; }
+
+  .card-total  .dash-icon { background: rgba(255,255,255,0.2); color: #fff; }
+  .card-active .dash-icon { background: rgba(255,255,255,0.2); color: #fff; }
+  .card-inactive .dash-icon { background: rgba(255,255,255,0.2); color: #fff; }
+  .card-leave  .dash-icon { background: rgba(255,255,255,0.2); color: #fff; }
+  .card-pending .dash-icon { background: rgba(255,255,255,0.2); color: #fff; }
+
+  .dash-label { opacity: 0.85; }
+</style>
+
+<div class="mb-4">
+  <h3 class="fw-bold">
+    <i class="bi bi-speedometer2"></i> HR Dashboard
+  </h3>
+  <p class="text-muted mb-0">Welcome back, {{ user.get_full_name|default:user.username }}. Here's a quick overview.</p>
+</div>
+
+<div class="row g-4">
+  <!-- Total Employees -->
+  <div class="col-sm-6 col-lg-3">
+    <a href="{% url 'employee_list' %}" class="dash-card card shadow-sm card-total">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="dash-icon">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <i class="bi bi-arrow-right fs-5" style="opacity:.6"></i>
+        </div>
+        <div class="dash-count">{{ total_count }}</div>
+        <div class="dash-label">Total Employees</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Active -->
+  <div class="col-sm-6 col-lg-3">
+    <a href="{% url 'employee_list' %}?status=ACTIVE" class="dash-card card shadow-sm card-active">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="dash-icon">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <i class="bi bi-arrow-right fs-5" style="opacity:.6"></i>
+        </div>
+        <div class="dash-count">{{ active_count }}</div>
+        <div class="dash-label">Active</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Inactive -->
+  <div class="col-sm-6 col-lg-3">
+    <a href="{% url 'employee_list' %}?status=INACTIVE" class="dash-card card shadow-sm card-inactive">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="dash-icon">
+            <i class="bi bi-x-circle-fill"></i>
+          </div>
+          <i class="bi bi-arrow-right fs-5" style="opacity:.6"></i>
+        </div>
+        <div class="dash-count">{{ inactive_count }}</div>
+        <div class="dash-label">Inactive</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- On Leave -->
+  <div class="col-sm-6 col-lg-3">
+    <a href="{% url 'employee_list' %}?status=ON_LEAVE" class="dash-card card shadow-sm card-leave">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="dash-icon">
+            <i class="bi bi-calendar-event-fill"></i>
+          </div>
+          <i class="bi bi-arrow-right fs-5" style="opacity:.6"></i>
+        </div>
+        <div class="dash-count">{{ on_leave_count }}</div>
+        <div class="dash-label">On Leave</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Pending Leave Requests -->
+  <div class="col-sm-6 col-lg-3">
+    <a href="{% url 'hr_leave_requests' %}?status=PENDING" class="dash-card card shadow-sm card-pending">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="dash-icon">
+            <i class="bi bi-clipboard-check-fill"></i>
+          </div>
+          <i class="bi bi-arrow-right fs-5" style="opacity:.6"></i>
+        </div>
+        <div class="dash-count">{{ pending_leave_count }}</div>
+        <div class="dash-label">Pending Leaves</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'employees/base.html' %}
+{% block title %}My Leave Requests - HR Portal{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+        <i class="bi bi-calendar-check"></i> My Leave Requests
+    </h4>
+    <a href="{% url 'leave_request_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Apply for Leave
+    </a>
+</div>
+
+{% if leaves %}
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Type</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>HR Remarks</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leave in leaves %}
+                <tr>
+                    <td>{{ leave.get_leave_type_display }}</td>
+                    <td>{{ leave.start_date }}</td>
+                    <td>{{ leave.end_date }}</td>
+                    <td style="max-width:200px;" class="text-truncate">{{ leave.reason }}</td>
+                    <td>
+                        {% if leave.status == 'PENDING' %}
+                            <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> Pending</span>
+                        {% elif leave.status == 'APPROVED' %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Denied</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-muted" style="max-width:180px;">{{ leave.hr_remarks|default:"-" }}</td>
+                    <td class="text-muted">{{ leave.created_at|date:"d M Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-calendar-x" style="font-size:3rem;"></i>
+    <p class="mt-2">No leave requests yet.</p>
+</div>
+{% endif %}
+{% endblock %}

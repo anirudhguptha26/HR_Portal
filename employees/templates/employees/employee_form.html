@@ -1,0 +1,94 @@
+{% extends 'employees/base.html' %}
+{% block title %}{% if is_new %}Add Employee{% else %}Edit Employee{% endif %} - HR Portal{% endblock %}
+{% block content %}
+<h4 class="mb-3">{% if is_new %}Add Employee{% else %}Edit Employee{% endif %}</h4>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if is_new %}
+                <h6 class="text-muted mb-3"><i class="bi bi-person-lock me-1"></i>Login Details</h6>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">{{ user_form.username.label }}</label>
+                        {{ user_form.username }}
+                        {% for error in user_form.username.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{{ user_form.password.label }}</label>
+                        {{ user_form.password }}
+                        {% for error in user_form.password.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{{ user_form.first_name.label }}</label>
+                        {{ user_form.first_name }}
+                        {% for error in user_form.first_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{{ user_form.last_name.label }}</label>
+                        {{ user_form.last_name }}
+                        {% for error in user_form.last_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{{ user_form.email.label }}</label>
+                        {{ user_form.email }}
+                        {% for error in user_form.email.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                </div>
+                <hr>
+                <h6 class="text-muted mb-3"><i class="bi bi-person-badge me-1"></i>Employee Details</h6>
+            {% endif %}
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">{{ emp_form.employee_id.label }}</label>
+                    {{ emp_form.employee_id }}
+                    {% for error in emp_form.employee_id.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ emp_form.department.label }}</label>
+                    {{ emp_form.department }}
+                    {% for error in emp_form.department.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ emp_form.job_role.label }}</label>
+                    {{ emp_form.job_role }}
+                    {% for error in emp_form.job_role.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ emp_form.shift.label }}</label>
+                    {{ emp_form.shift }}
+                    {% for error in emp_form.shift.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ emp_form.status.label }}</label>
+                    {{ emp_form.status }}
+                    {% for error in emp_form.status.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ emp_form.phone.label }}</label>
+                    {{ emp_form.phone }}
+                    {% for error in emp_form.phone.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ emp_form.photo.label }}</label>
+                    {{ emp_form.photo }}
+                    {% for error in emp_form.photo.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check mb-1">
+                        {{ emp_form.is_hr }}
+                        <label class="form-check-label">{{ emp_form.is_hr.label }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">
+                {% if is_new %}Add Employee{% else %}Save Changes{% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

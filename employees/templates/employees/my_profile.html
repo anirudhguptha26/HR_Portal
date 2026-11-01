@@ -1,0 +1,36 @@
+{% extends 'employees/base.html' %}
+{% block title %}My Profile - HR Portal{% endblock %}
+{% block content %}
+<div class="card shadow-sm" style="max-width: 500px;">
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            {% if employee.photo %}
+                <img src="{{ employee.photo.url }}" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+            {% else %}
+                <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center" style="width:56px;height:56px;font-size:20px;">
+                    {{ employee.user.first_name|first|upper }}{{ employee.user.last_name|first|upper }}
+                </div>
+            {% endif %}
+            <div class="flex-grow-1">
+                <h4 class="mb-0">{{ employee.user.get_full_name|default:employee.user.username }}</h4>
+                <span class="text-muted">{{ employee.employee_id }}</span>
+            </div>
+            <a href="{% url 'my_profile_edit' %}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil-square"></i> Edit Profile
+            </a>
+            <a href="{% url 'leave_request_create' %}" class="btn btn-outline-warning btn-sm">
+                <i class="bi bi-calendar-plus"></i> Apply for Leave
+            </a>
+        </div>
+        <table class="table table-borderless mb-0">
+            <tr><th class="text-muted" style="width:160px;">Department</th><td>{{ employee.department.name|default:"-" }}</td></tr>
+            <tr><th class="text-muted">Role</th><td>{{ employee.job_role }}</td></tr>
+            <tr><th class="text-muted">Shift</th><td>{{ employee.get_shift_display }}</td></tr>
+            <tr><th class="text-muted">Status</th><td>{{ employee.get_status_display }}</td></tr>
+            <tr><th class="text-muted">Phone</th><td>{{ employee.phone|default:"-" }}</td></tr>
+            <tr><th class="text-muted">Email</th><td>{{ employee.user.email|default:"-" }}</td></tr>
+            <tr><th class="text-muted">Date Joined</th><td>{{ employee.date_joined }}</td></tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

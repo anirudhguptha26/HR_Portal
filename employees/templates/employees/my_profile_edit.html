@@ -1,0 +1,42 @@
+{% extends 'employees/base.html' %}
+{% block title %}Edit Profile - HR Portal{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Edit Profile</h4>
+          <a href="{% url 'my_profile' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+              {% endif %}
+              {% for error in field.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          {% if employee.photo %}
+            <div class="mb-3">
+              <label class="form-label">Current Photo</label>
+              <div>
+                <img src="{{ employee.photo.url }}" class="rounded" width="80" height="80" style="object-fit:cover;">
+              </div>
+            </div>
+          {% endif %}
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-check-lg"></i> Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
